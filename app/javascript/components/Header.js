@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 const Header = () => (
   <header>
-    <Link to='/events/'>
-      <h1>Event Manager</h1>
+    <Link to='/pokemon/'>
+      <h1>Pokedex</h1>
     </Link>
   </header>
 );

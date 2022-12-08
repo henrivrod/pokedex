@@ -3,25 +3,25 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import Header from './Header';
-import Event from './Event';
-import EventForm from './EventForm';
-import EventList from './EventList';
+import Pokemon from './Pokemon';
+import PokemonForm from './PokemonForm';
+import PokemonList from './PokemonList';
 import { success } from '../helpers/notifications';
 import { handleAjaxError } from '../helpers/helpers';
 
 const Editor = () => {
-  const [events, setEvents] = useState([]);
+  const [pokemon, setPokemon] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await window.fetch('/api/events.json');
+        const response = await window.fetch('/api/pokemon.json');
         if (!response.ok) throw Error(response.statusText);
 
         const data = await response.json();
-        setEvents(data);
+        setPokemon(data);
       } catch (error) {
         handleAjaxError(error);
       }
@@ -32,11 +32,11 @@ const Editor = () => {
     fetchData();
   }, []);
 
-  const addEvent = async (newEvent) => {
+  const addPokemon = async (newPokemon) => {
     try {
-      const response = await window.fetch('/api/events.json', {
+      const response = await window.fetch('/api/pokemon.json', {
         method: 'POST',
-        body: JSON.stringify(newEvent),
+        body: JSON.stringify(newPokemon),
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -45,43 +45,23 @@ const Editor = () => {
 
       if (!response.ok) throw Error(response.statusText);
 
-      const savedEvent = await response.json();
-      const newEvents = [...events, savedEvent];
-      setEvents(newEvents);
-      success('Event Added!');
-      navigate(`/events/${savedEvent.id}`);
+      const savedPokemon = await response.json();
+      const newPokemon = [...pokemon, savedPokemon];
+      setPokemon(newPokemon);
+      success('Pokemon Added!');
+      navigate(`/pokemon/${savedPokemon.id}`);
     } catch (error) {
       handleAjaxError(error);
     }
   };
 
-  const deleteEvent = async (eventId) => {
-    const sure = window.confirm('Are you sure?');
-
-    if (sure) {
-      try {
-        const response = await window.fetch(`/api/events/${eventId}.json`, {
-          method: 'DELETE',
-        });
-
-        if (!response.ok) throw Error(response.statusText);
-
-        success('Event Deleted!');
-        navigate('/events');
-        setEvents(events.filter(event => event.id !== eventId));
-      } catch (error) {
-        handleAjaxError(error);
-      }
-    }
-  };
-
-  const updateEvent = async (updatedEvent) => {
+  const updatePokemon = async (updatedPokemon) => {
     try {
       const response = await window.fetch(
-        `/api/events/${updatedEvent.id}.json`,
+        `/api/pokemon/${updatedPokemon.id}.json`,
         {
           method: 'PUT',
-          body: JSON.stringify(updatedEvent),
+          body: JSON.stringify(updatedPokemon),
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -91,13 +71,13 @@ const Editor = () => {
 
       if (!response.ok) throw Error(response.statusText);
 
-      const newEvents = events;
-      const idx = newEvents.findIndex((event) => event.id === updatedEvent.id);
-      newEvents[idx] = updatedEvent;
-      setEvents(newEvents);
+      const newPokemon = pokemon;
+      const idx = newPokemon.findIndex((pmon) => pmon.id === updatedPokemon.id);
+      newPokemon[idx] = updatedPokemon;
+      setPokemon(newPokemon);
 
-      success('Event Updated!');
-      navigate(`/events/${updatedEvent.id}`);
+      success('Pokemon Updated!');
+      navigate(`/pokemon/${updatedPokemon.id}`);
     } catch (error) {
       handleAjaxError(error);
     }
@@ -110,18 +90,18 @@ const Editor = () => {
         <p className='loading'>Loading...</p>
       ) : (
         <div className="grid">
-          <EventList events={events} />
+          <PokemonList pokemon={pokemon} />
 
           <Routes>
             <Route
               path=":id"
-              element={<Event events={events} onDelete={deleteEvent} />}
+              element={<Pokemon pokemon={pokemon}/>}
             />
             <Route
               path=":id/edit"
-              element={<EventForm events={events} onSave={updateEvent} />}
+              element={<PokemonForm pokemon={pokemon} onSave={updatePokemon} />}
             />
-            <Route path="new" element={<EventForm onSave={addEvent} />} />
+            <Route path="new" element={<PokemonForm onSave={addPokemon()} />} />
           </Routes>
         </div>
       )}

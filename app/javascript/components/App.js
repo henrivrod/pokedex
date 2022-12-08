@@ -7,7 +7,7 @@ import './App.css';
 const App = () => (
   <>
     <Routes>
-      <Route path="events/*" element={<Editor />} />
+      <Route path="pokemon/*" element={<Editor />} />
     </Routes>
     <ToastContainer />
   </>

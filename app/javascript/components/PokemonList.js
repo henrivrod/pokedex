@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
 
-const EventList = ({ events }) => {
+const PokemonList = ({ pokemon }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const searchInput = useRef(null);
 
@@ -12,31 +12,29 @@ const EventList = ({ events }) => {
 
   const matchSearchTerm = (obj) => {
     // eslint-disable-next-line camelcase
-    const { id, published, created_at, updated_at, ...rest } = obj;
+    const { id, created_at, updated_at, ...rest } = obj;
     return Object.values(rest).some(
       (value) => value.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
     );
   };
 
-  const renderEvents = (eventArray) =>
-    eventArray
+  const renderPokemon = (pokemonArray) =>
+    pokemonArray
       .filter((el) => matchSearchTerm(el))
-      .sort((a, b) => new Date(b.event_date) - new Date(a.event_date))
-      .map((event) => (
-        <li key={event.id}>
-          <NavLink to={`/events/${event.id}`}>
-            {event.event_date}
-            {' - '}
-            {event.event_type}
+      .sort((a, b) => b.id - a.id)
+      .map((pmon) => (
+        <li key={pmon.id}>
+          <NavLink to={`/pokemon/${pmon.id}`}>
+            {pmon.name}
           </NavLink>
         </li>
       ));
 
   return (
-    <section className="eventList">
+    <section className="pokemonlist">
       <h2>
-        Events
-        <Link to="/events/new">New Event</Link>
+        Pokemon
+        <Link to="/pokemon/new">New Pokemon</Link>
       </h2>
 
       <input
@@ -47,23 +45,19 @@ const EventList = ({ events }) => {
         onKeyUp={updateSearchTerm}
       />
 
-      <ul>{renderEvents(events)}</ul>
+      <ul>{renderPokemon(pokemon)}</ul>
     </section>
   );
 };
 
-EventList.propTypes = {
-  events: PropTypes.arrayOf(
+PokemonList.propTypes = {
+  pokemon: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      event_type: PropTypes.string.isRequired,
-      event_date: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      speaker: PropTypes.string.isRequired,
-      host: PropTypes.string.isRequired,
-      published: PropTypes.bool.isRequired,
+      name: PropTypes.string.isRequired,
+      image_url: PropTypes.string.isRequired,
     })
   ).isRequired,
 };
 
-export default EventList;
+export default PokemonList;
