@@ -9,8 +9,10 @@ import PokemonList from './PokemonList';
 import { success } from '../helpers/notifications';
 import { handleAjaxError } from '../helpers/helpers';
 
+
 const Editor = () => {
   const [pokemon, setPokemon] = useState([]);
+  const [types, setTypes] = useState([])
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -21,7 +23,8 @@ const Editor = () => {
         if (!response.ok) throw Error(response.statusText);
 
         const data = await response.json();
-        setPokemon(data);
+        setPokemon(data["results"]);
+        setTypes(data["types"])
       } catch (error) {
         handleAjaxError(error);
       }
@@ -32,11 +35,11 @@ const Editor = () => {
     fetchData();
   }, []);
 
-  const addPokemon = async (newPokemon) => {
+  const addPokemon = async (newPmon) => {
     try {
       const response = await window.fetch('/api/pokemon.json', {
         method: 'POST',
-        body: JSON.stringify(newPokemon),
+        body: JSON.stringify(newPmon),
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -49,7 +52,7 @@ const Editor = () => {
       const newPokemon = [...pokemon, savedPokemon];
       setPokemon(newPokemon);
       success('Pokemon Added!');
-      navigate(`/pokemon/${savedPokemon.id}`);
+      navigate(`/pokemon/`);
     } catch (error) {
       handleAjaxError(error);
     }
@@ -71,13 +74,14 @@ const Editor = () => {
 
       if (!response.ok) throw Error(response.statusText);
 
+      const savedPokemon = await response.json();
       const newPokemon = pokemon;
       const idx = newPokemon.findIndex((pmon) => pmon.id === updatedPokemon.id);
-      newPokemon[idx] = updatedPokemon;
+      newPokemon[idx] = savedPokemon;
       setPokemon(newPokemon);
 
       success('Pokemon Updated!');
-      navigate(`/pokemon/${updatedPokemon.id}`);
+      navigate(`/pokemon/`);
     } catch (error) {
       handleAjaxError(error);
     }
@@ -99,9 +103,9 @@ const Editor = () => {
             />
             <Route
               path=":id/edit"
-              element={<PokemonForm pokemon={pokemon} onSave={updatePokemon} />}
+              element={<PokemonForm pokemon={pokemon} types={types} onSave={updatePokemon} />}
             />
-            <Route path="new" element={<PokemonForm onSave={addPokemon()} />} />
+            <Route path="new" element={<PokemonForm types={types} onSave={addPokemon} />} />
           </Routes>
         </div>
       )}

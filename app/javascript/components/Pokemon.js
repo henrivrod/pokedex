@@ -15,7 +15,7 @@ const Pokemon = ({ pokemon, onDelete }) => {
         {pmon.name}
         {' - '}
         {pmon.image_url}
-        <Link to={`/pmon/${pmon.id}/edit`}>Edit</Link>
+        <Link to={`/pokemon/${pmon.id}/edit`}>Edit</Link>
       </h2>
     </div>
   );
@@ -27,6 +27,7 @@ Pokemon.propTypes = {
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
       image_url: PropTypes.string.isRequired,
+      types: PropTypes.array.isRequired
     })
   ).isRequired,
 };

@@ -3,6 +3,123 @@ body, html, div, blockquote, img, label, p, h1, h2, h3, h4, h5, h6, pre, ul, ol,
   padding: 0;
 }
 
+.addButton{
+  float: right;
+  height: 72px;
+  width: 420px;
+  margin-top: 72px;
+  margin-right: 5%;
+  border-radius: 100px;
+  background-color: #EB5435;
+  font-weight: 590;
+  font-size: 36px;
+  line-height: 42.96px;
+  color: white;
+}
+
+.col{
+  width: auto;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  margin-left: 30%;
+  margin-bottom: 20%;
+  padding: 20%;
+  border-radius: 16px;
+}
+
+.flex {
+  display: flex
+}
+.pokeCard{
+  display: inline;
+  width: 171px;
+  padding-left: 8px;
+}
+
+.grass{
+  background-color: #76CC55
+}
+
+.poison{
+  background-color: #AA5599
+}
+
+.rock{
+  background-color: #BBAA66
+}
+
+.ghost{
+  background-color: #6666BA
+}
+
+.steel{
+  background-color: #AAAABB
+}
+
+.water{
+  background-color: #3399FE
+}
+
+.psychic{
+  background-color: #FF5599
+}
+
+.ice{
+  background-color: #65CCFF
+}
+
+.dark{
+  background-color: #775444
+}
+
+.fairy{
+  background-color: #EE99EE
+}
+
+.normal{
+  background-color: #AAAA98
+}
+
+.fighting{
+  background-color: #BA5544
+}
+
+.flying{
+  background-color: #8799FF
+}
+
+.ground{
+  background-color: #DD8854
+}
+
+.bug{
+  background-color: #A9BB22
+}
+
+.fire{
+  background-color: #EB5435
+}
+
+.electric{
+  background-color: #FFCC33
+}
+
+.dragon{
+  background-color: #6666BA
+}
+
+.pokeball{
+  height: 60px;
+  width: 60px;
+  float: left;
+}
+
+.logo {
+  width: 331.71px;
+  height: 120px;
+  margin-top: 48px;
+  margin-left: 36px;
+}
+
 ul, ol {
   list-style: none;
 }
@@ -14,8 +131,8 @@ body {
 }
 
 header {
-  background: #f57011;
-  height: 60px;
+  background: white;
+  height: auto;
 }
 
 header h1, header h1 a{
@@ -188,4 +305,20 @@ input.search {
   display: grid;
   justify-content: center;
   align-content: center;
+}
+
+.modal {
+  z-index: 1;
+  position: fixed;
+  top: 35%;
+  left: 35%;
+}
+
+.modal_content {
+  background-color: white;
+  position: absolute;
+  border: 2px solid #ccc;
+  border-radius: 16px;
+  padding: 2%;
+  box-shadow: 0 0 0 99999px rgba(0, 0, 0, .5);
 }

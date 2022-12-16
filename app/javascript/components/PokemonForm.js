@@ -3,11 +3,11 @@ import { useParams, Link } from 'react-router-dom';
 import Pikaday from 'pikaday';
 import PropTypes from 'prop-types';
 import PokemonNotFound from './PokemonNotFound';
-//import { formatDate, isEmptyObject, validateEvent } from '../helpers/helpers';
+import {isEmptyObject, validatePokemon} from '../helpers/helpers';
 
 import 'pikaday/css/pikaday.css';
 
-const PokemonForm = ({ pokemon, onSave }) => {
+const PokemonForm = ({ pokemon, types, onSave }) => {
   const { id } = useParams();
 
   const initialPokemonState = useCallback(
@@ -15,6 +15,7 @@ const PokemonForm = ({ pokemon, onSave }) => {
       const defaults = {
         name: '',
         image_url: '',
+        types: [],
       };
       const currPokemon = id ? pokemon.find((e) => e.id === Number(id)) : {};
       return { ...defaults, ...currPokemon }
@@ -30,33 +31,32 @@ const PokemonForm = ({ pokemon, onSave }) => {
     setPokemon((prevPokemon) => ({ ...prevPokemon, [key]: value }));
   };
 
-  /*useEffect(() => {
-    const p = new Pikaday({
-      field: dateInput.current,
-      toString: date => formatDate(date),
-      onSelect: (date) => {
-        const formattedDate = formatDate(date);
-        dateInput.current.value = formattedDate;
-        updateEvent('event_date', formattedDate);
-      },
-    });
-
-    // Return a cleanup function.
-    // React will call this prior to unmounting.
-    return () => p.destroy();
-  }, []);*/
-
   const handleInputChange = (e) => {
     const { target } = e;
     const { name } = target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
 
-    updatePokemon(name, value);
+    if (name==='types'){
+      const options = target.options
+      let value=[]
+      for (let i =0; i<options.length; i++){
+        console.log(i)
+        if (options[i].selected){
+          console.log(options[i].value)
+          value.push(options[i].value)
+          console.log(value)
+        }
+      }
+      updatePokemon(name, value);
+    }
+    else{
+      let value=target.value
+      updatePokemon(name, value);
+    }
   };
 
   useEffect(() => {
-    setPokemon(initialPokemonState());
-  }, [pokemon, initialPokemonState()]);
+    setPokemon(initialPokemonState);
+  }, [pokemon, initialPokemonState]);
 
   const renderErrors = () => {
     if (isEmptyObject(formErrors)) return null;
@@ -84,46 +84,54 @@ const PokemonForm = ({ pokemon, onSave }) => {
     }
   };
 
-  const cancelURL = pmon.id ? `/pokemon/${pmon.id}` : '/pokemon';
   const title = pmon.id ? `${pmon.name} ` : 'New Pokemon';
 
   if (id && !pmon.id) return <PokemonNotFound />;
 
   return (
-    <div>
-      <h2>{title}</h2>
-      {renderErrors()}
+    <div className="modal">
+      <div className="modal_content">
+        <h2>{title}</h2>
+        {renderErrors()}
 
-      <form className="pokemonForm" onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="event_type"> //change to name?
+        <form className="pokemonForm" onSubmit={handleSubmit}>
+          <div>
             <strong>Name:</strong>
             <input
               type="text"
               id="name"
               name="name"
               onChange={handleInputChange}
-              value={pmon.name}
+              defaultValue={pmon.name}
+              required={true}
             />
-          </label>
-        </div>
-        <div>
-          <label htmlFor="event_date"> //change to image_url?
+          </div>
+          <div>
             <strong>Image Url:</strong>
             <input
               type="text"
               id="image_url"
               name="image_url"
-              value={pmon.image_url}
+              defaultValue={pmon.image_url}
               onChange={handleInputChange}
+              required={true}
             />
-          </label>
-        </div>
-        <div className="form-actions">
-          <button type="submit">Save</button>
-          <Link to={cancelURL}>Cancel</Link>
-        </div>
-      </form>
+          </div>
+          <div>
+            <strong>Types:</strong>
+            <select multiple={true} required={true} defaultValue={pmon.types ? pmon.types.map(t => t.name) : []} id="types" name="types" onChange={handleInputChange}>
+              {types.map((type)=>(
+                  <option value={type.name}>{type.name}</option>
+              ))
+              }
+            </select>
+          </div>
+          <div className="form-actions">
+            <button type="submit">Save</button>
+            <Link to='/pokemon'>Cancel</Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
@@ -136,9 +144,10 @@ PokemonForm.propTypes = {
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
       image_url: PropTypes.string.isRequired,
+      types: PropTypes.array.isRequired
     })
   ),
-  onSave: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired
 };
 
 PokemonForm.defaultProps = {

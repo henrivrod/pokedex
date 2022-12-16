@@ -4,33 +4,28 @@ export const isEmptyObject = (obj) => Object.keys(obj).length === 0;
 
 const isValidDate = (dateObj) => !Number.isNaN(Date.parse(dateObj));
 
-export const validateEvent = (event) => {
+export const validatePokemon = (pmon) => {
   const errors = {};
 
-  if (event.event_type === '') {
-    errors.event_type = 'You must enter an event type';
+  if (pmon.name === '') {
+    errors.pokemon_type = 'You must enter a valid name';
   }
 
-  if (event.event_date === '') {
-    errors.event_date = 'You must enter a valid date';
+  if (pmon.image_url === '') {
+    errors.pokemon_image_url = 'You must enter a valid image url';
   }
 
-  if (!isValidDate(event.event_date)) {
-    errors.event_date = 'You must enter a valid date';
+  if (pmon.image_url.match(/\.(png)$/) === null) {
+    errors.pokemon_image_url = 'You must enter a valid image url';
   }
 
-  if (event.title === '') {
-    errors.title = 'You must enter a title';
+  if (pmon.types.length === 0) {
+    errors.pokemon_types = 'You must have at least one type';
   }
 
-  if (event.speaker === '') {
-    errors.speaker = 'You must enter at least one speaker';
+  if (pmon.types.length > 2) {
+    errors.pokemon_types = 'You cannot have more than two types';
   }
-
-  if (event.host === '') {
-    errors.host = 'You must enter at least one host';
-  }
-
   return errors;
 };
 
